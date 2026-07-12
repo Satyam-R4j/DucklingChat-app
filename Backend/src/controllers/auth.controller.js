@@ -1,5 +1,5 @@
 import User from "../models/User.js"
-import {upsertStreamUser} from "../lib/stream.js"
+import { upsertStreamUser } from "../lib/stream.js"
 import jwt from "jsonwebtoken"
 
 
@@ -50,11 +50,11 @@ export async function signup(req, res) {
                 image: newUser.profilePic || ""
             })
 
-            console.log(`Stream user created for ${newUser.fullName }`)
+            console.log(`Stream user created for ${newUser.fullName}`)
         } catch (error) {
 
             console.log("Error creating Stream user: ", error)
-            
+
         }
 
 
@@ -75,8 +75,8 @@ export async function signup(req, res) {
 
 
     } catch (error) {
-        console.log("Error is signup controller", error)
-        res.send(500).json({ message: "Internal Server error" })
+        console.log("Error in signup controller", error)
+        res.status(500).json({ message: "Internal Server Error" })
     }
 
 }
@@ -88,7 +88,7 @@ export async function login(req, res) {
         const { email, password } = req.body
 
         if (!email || !password) {
-            return res.status(401).json({ message: "All fileds are required" })
+            return res.status(401).json({ message: "All fields are required" })
         }
 
         const user = await User.findOne({ email })
@@ -117,15 +117,62 @@ export async function login(req, res) {
 
 
     } catch (error) {
-
-        console.log("Error is signup controller", error)
-        res.send(500).json({ message: "Internal Server error" })
+        console.log("Error in login controller", error)
+        res.status(500).json({ message: "Internal Server Error" })
     }
 
 
 }
 export function logout(req, res) {
     res.clearCookie("jwt")
-    res.status(200).json({success: true, message: "Logout successful"})
+    res.status(200).json({ success: true, message: "Logout successful" })
+}
+
+
+
+export async function onboard(req, res) {
+    try {
+        const userId = req.user._id
+
+        const { fullName, bio, nativeLanguage, learningLanguage, location } = req.body
+
+        if (!fullName || !bio || !nativeLanguage || !learningLanguage || !location) {
+            return res.status(400).json({
+                message: "All fields are required",
+                missingFields: [
+                    !fullName && "fullName",
+                    !bio && "bio",
+                    !nativeLanguage && "nativeLanguage",
+                    !learningLanguage && "learningLanguage",
+                    !location && "location"
+                ].filter(Boolean)
+            })
+        }
+
+        const updateUser = await User.findByIdAndUpdate(userId, {
+            ...req.body,
+            isOnboarded: true
+        }, { new: true })
+
+        if (!updateUser) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        try {
+            await upsertStreamUser({
+                id: updateUser._id.toString(),
+                name: updateUser.fullName,
+                image: updateUser.profilePic || ""
+            })
+            console.log(`Stream user updated after onbording for ${updateUser.fullName}`)
+        } catch (streamError) {
+            console.log("Error updating stream user during onboarding:", streamError)
+        }
+
+        res.status(200).json({ success: true, user: updateUser })
+    } catch (error) {
+        console.error("Onboarding error: ", error)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
 
 }
