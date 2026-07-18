@@ -3,10 +3,11 @@ import { Link } from "react-router";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import logo from "../assets/logo.png";
 import vcImg from "../assets/vc.png";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup } from "../lib/api.js";
 
 const SignupPage = () => {
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
   const [signUpData, setSignUpData] = useState({
     fullName: "",
@@ -20,7 +21,7 @@ const SignupPage = () => {
     error,
   } = useMutation({
     mutationFn: signup,
-    onSuccess: () => QueryClient.invalidateQueries({ queryKey: ["authUser"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
   });
 
   const handleSignup = (e) => {
@@ -54,8 +55,8 @@ const SignupPage = () => {
 
           {/* ERROR MESSAGE IF ANY */}
           {error && (
-            <div className="alert alert-errord mb-4">
-              <span className="">{error.response.data.message}</span>
+            <div className="alert alert-error mb-4">
+              <span className="">{error.response?.data?.message || error.message || "An error occurred"}</span>
             </div>
           )}
 
@@ -173,7 +174,11 @@ const SignupPage = () => {
               className="btn btn-primary w-full shadow-lg shadow-primary/20 mt-2 font-semibold tracking-wide"
               type="submit"
             >
-              {isPending ? "Signing up..." : "Create Account"}
+              {isPending ? (
+                <>
+                  <span className="loading loading-spinner loading-xs">Loading...</span>
+                </>
+              ) : ("Create Account")}
             </button>
 
             {/* Footer Signin */}

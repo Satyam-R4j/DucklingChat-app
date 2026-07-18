@@ -1,45 +1,96 @@
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from "react-router";
 
-import HomePage from './pages/HomePage.jsx'
-import ChatPage from './pages/ChatPage.jsx'
-import CallPage from './pages/CallPage.jsx'
-import LoginPage from './pages/LoginPage.jsx'
-import NotificationsPage from './pages/NotificationsPage.jsx'
-import OnboardingPage from './pages/OnboardingPage.jsx'
-import SignUpPage from './pages/SignUpPage.jsx'
-import { Toaster } from 'react-hot-toast'
-import { useQuery } from '@tanstack/react-query'
-import { axiosInstance } from './lib/axios.js'
+import HomePage from "./pages/HomePage.jsx";
+import ChatPage from "./pages/ChatPage.jsx";
+import CallPage from "./pages/CallPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import NotificationsPage from "./pages/NotificationsPage.jsx";
+import OnboardingPage from "./pages/OnboardingPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
+import { Toaster } from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "./lib/axios.js";
+import PageLoader from "./components/PageLoader.jsx";
+import { getAuthUser } from "./lib/api.js";
+import useAuthUser from "./hooks/useAuthUser.js";
+
 const App = () => {
+  const { isLoading, authUser } = useAuthUser();
 
-  const { data: authData, isLoading, error } = useQuery({
-    queryKey: ["authUser"],
+  const isAutheticated = Boolean(authUser);
+  const isOnboarded = authUser?.isOnboarded;
 
-    queryFn: async () => {
-      const res = await axiosInstance.get("/auth/me")
-      return res.data
-    },
-    retry: false
-  })
+  if (isLoading) return <PageLoader />;
 
-  const authUser = authData?.user
+  return (
+    <div className="h-screen" data-theme="night">
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAutheticated && isOnboarded ? (
+              <HomePage />
+            ) : (
+              <Navigate to={!isAutheticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={!isAutheticated ? <SignUpPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/login"
+          element={!isAutheticated ? <LoginPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/notifications"
+          element={
+            isAutheticated && isOnboarded ? (
+              <NotificationsPage />
+            ) : (
+              <Navigate to={!isAutheticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/call"
+          element={
+            isAutheticated && isOnboarded ? (
+              <CallPage />
+            ) : (
+              <Navigate to={!isAutheticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            isAutheticated && isOnboarded ? (
+              <ChatPage />
+            ) : (
+              <Navigate to={!isAutheticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            isAutheticated ? (
+              !isOnboarded ? (
+                <OnboardingPage />
+              ) : (
+                <Navigate to="/" />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+      <Toaster />
+    </div>
+  );
+};
 
-  return <div className='h-screen' data-theme="night">
-    <Routes>
-
-      <Route path='/' element={authUser ? <HomePage /> : <Navigate to="/login" />} />
-      <Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
-      <Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
-      <Route path='/notifications' element={!authUser ? <NotificationsPage /> : <Navigate to="/" />} />
-      <Route path='/call' element={!authUser ? <CallPage /> : <Navigate to="/" />} />
-      <Route path='/chat' element={!authUser ? <ChatPage /> : <Navigate to="/" />} />
-      <Route path='/onboarding' element={!authUser ? <OnboardingPage /> : <Navigate to="/" />} />
-
-
-    </Routes>
-    <Toaster />
-
-  </div>
-}
-
-export default App
+export default App;
