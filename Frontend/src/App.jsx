@@ -13,9 +13,12 @@ import { axiosInstance } from "./lib/axios.js";
 import PageLoader from "./components/PageLoader.jsx";
 import { getAuthUser } from "./lib/api.js";
 import useAuthUser from "./hooks/useAuthUser.js";
+import Layout from "./components/Layout.jsx";
+import { useThemeStore } from "./store/useThemeStore.js";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
+  const { theme } = useThemeStore();
 
   const isAutheticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
@@ -23,13 +26,15 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme="night">
+    <div className="min-h-screen bg-base-100 text-base-content" data-theme={theme}>
       <Routes>
         <Route
           path="/"
           element={
             isAutheticated && isOnboarded ? (
-              <HomePage />
+              <Layout showSidebar={true}>
+                <HomePage />
+              </Layout>
             ) : (
               <Navigate to={!isAutheticated ? "/login" : "/onboarding"} />
             )
@@ -41,7 +46,13 @@ const App = () => {
         />
         <Route
           path="/login"
-          element={!isAutheticated ? <LoginPage /> : <Navigate to="/" />}
+          element={
+            !isAutheticated ? (
+              <LoginPage />
+            ) : (
+              <Navigate to={isOnboarded ? "/" : "/onboarding"} />
+            )
+          }
         />
         <Route
           path="/notifications"
