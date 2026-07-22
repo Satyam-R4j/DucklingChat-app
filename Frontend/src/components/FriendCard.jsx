@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { MessageSquare, Phone, MapPin, Globe, Languages } from 'lucide-react';
+import { MessageSquare, MapPin, Globe, Languages, Video, Phone } from 'lucide-react';
 import { LANGUAGE_TO_FLAG } from '../constants';
 
 const FriendCard = ({ friend, isRecommendation = false, onConnect, isConnecting = false, hasSentRequest = false }) => {
@@ -147,56 +147,30 @@ const FriendCard = ({ friend, isRecommendation = false, onConnect, isConnecting 
 
       {/* Action Footer Button Area */}
       <div className="p-4 border-t border-base-300/40 bg-base-200/30 flex gap-2 w-full mt-auto">
-        {isRecommendation ? (
-          <button
-            type="button"
-            onClick={onConnect}
-            disabled={hasSentRequest || isConnecting}
-            className={`btn btn-sm flex-1 gap-2 rounded-xl transition-all duration-200 border-0 ${
-              hasSentRequest
-                ? "bg-base-300 text-base-content/40 cursor-not-allowed"
-                : "btn-secondary text-secondary-content hover:scale-[1.02] shadow-xs hover:shadow-md cursor-pointer"
-            }`}
-          >
-            {hasSentRequest ? (
-              <>
-                <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Request Sent</span>
-              </>
-            ) : isConnecting ? (
-              <>
-                <span className="loading loading-spinner loading-xs"></span>
-                <span>Connecting...</span>
-              </>
-            ) : (
-              <>
-                <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Connect</span>
-              </>
-            )}
-          </button>
-        ) : (
-          <>
-            <Link 
-              to={`/chat?userId=${_id}`} 
-              className="btn btn-primary btn-sm flex-1 gap-2 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 text-primary-content hover:scale-[1.02] border-0"
-            >
-              <MessageSquare className="size-4" />
-              <span>Chat</span>
-            </Link>
-            <Link 
-              to={`/call?userId=${_id}`} 
-              className="btn btn-ghost border border-base-300 btn-sm btn-square rounded-xl hover:text-secondary hover:bg-secondary/10 hover:border-secondary/30 transition-all duration-200 hover:scale-[1.02]"
-              title="Call"
-            >
-              <Phone className="size-4" />
-            </Link>
-          </>
-        )}
+        {/* Chat Button */}
+        <Link
+          to={`/chat/${_id}`}
+          className="btn btn-primary btn-sm flex-1 gap-2 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 text-primary-content hover:scale-[1.02] border-0"
+        >
+          <MessageSquare className="size-4" />
+          <span>Chat</span>
+        </Link>
+        {/* Video Call Button */}
+        <Link
+          to={`/call/${_id}?type=video`}
+          className="btn btn-secondary btn-sm flex-1 gap-2 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 text-secondary-content hover:scale-[1.02] border-0"
+        >
+          <Video className="size-4" />
+          
+        </Link>
+        {/* Voice Call Button */}
+        <Link
+          to={`/call/${_id}?type=voice`}
+          className="btn btn-accent btn-sm flex-1 gap-2 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 text-accent-content hover:scale-[1.02] border-0"
+        >
+          <Phone className="size-4" />
+          
+        </Link>
       </div>
     </div>
   );

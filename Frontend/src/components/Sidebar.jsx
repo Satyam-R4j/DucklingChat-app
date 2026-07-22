@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router";
-import { Home, MessageSquare, Phone, Bell, LogOut, Sparkles, User, ShieldCheck } from "lucide-react";
+import { Home, MessageSquare, Bell, LogOut, Sparkles, User } from "lucide-react";
 import logo from "../assets/logo.png";
 import useAuthUser from "../hooks/useAuthUser.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,7 +22,6 @@ const Sidebar = () => {
   const navItems = [
     { label: "Home", path: "/", icon: Home },
     { label: "Chats", path: "/chat", icon: MessageSquare },
-    { label: "Calls", path: "/call", icon: Phone },
     { label: "Notifications", path: "/notifications", icon: Bell },
   ];
 

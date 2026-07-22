@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import {
   Palette,
@@ -27,6 +27,19 @@ const Navbar = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const themeDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(e.target)) {
+        themeDropdownRef.current.removeAttribute("open");
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   const { mutate: logoutMutation, isPending: isLoggingOut } = useMutation({
     mutationFn: logout,
@@ -103,11 +116,9 @@ const Navbar = () => {
         {/* Right Side: Theme Selector & User Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Theme Selector Dropdown */}
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-sm btn-ghost gap-2 border border-base-300 hover:border-primary/40 bg-base-200/50 hover:bg-base-200 rounded-xl px-3"
+          <details ref={themeDropdownRef} className="dropdown dropdown-end">
+            <summary
+              className="btn btn-sm btn-ghost gap-2 border border-base-300 hover:border-primary/40 bg-base-200/50 hover:bg-base-200 rounded-xl px-3 list-none [&::-webkit-details-marker]:hidden"
               title="Change Theme"
             >
               <Palette className="size-4 text-primary animate-pulse" />
@@ -125,11 +136,10 @@ const Navbar = () => {
                 ))}
               </div>
               <ChevronDown className="size-3.5 text-base-content/50" />
-            </div>
+            </summary>
 
             {/* Dropdown Menu List */}
             <div
-              tabIndex={0}
               className="dropdown-content z-50 mt-2 p-2 shadow-2xl bg-base-200 border border-base-300 rounded-2xl w-64 max-h-96 overflow-y-auto grid grid-cols-1 gap-1"
             >
               <div className="px-3 py-2 border-b border-base-300/60 mb-1 flex items-center justify-between">
@@ -148,9 +158,7 @@ const Navbar = () => {
                     key={t.name}
                     onClick={() => {
                       setTheme(t.name);
-                      if (document.activeElement instanceof HTMLElement) {
-                        document.activeElement.blur();
-                      }
+                      themeDropdownRef.current?.removeAttribute("open");
                     }}
                     className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 group ${
                       isSelected
@@ -179,7 +187,7 @@ const Navbar = () => {
                 );
               })}
             </div>
-          </div>
+          </details>
 
           {/* Notifications Button */}
           <Link

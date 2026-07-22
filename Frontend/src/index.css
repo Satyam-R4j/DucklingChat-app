@@ -15,3 +15,142 @@
     }
   }
 }
+
+/* Stream Chat CSS Overrides to match DaisyUI Theme variables dynamically */
+.str-chat {
+  background-color: var(--color-base-100) !important;
+  color: var(--color-base-content) !important;
+  font-family: inherit !important;
+}
+
+.str-chat__main-panel {
+  background-color: var(--color-base-100) !important;
+}
+
+/* Header */
+.str-chat__channel-header {
+  background-color: var(--color-base-100) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-base-content) 10%, transparent) !important;
+  padding: 1rem !important;
+}
+
+/* Message List */
+.str-chat__list {
+  background-color: var(--color-base-100) !important;
+}
+
+/* Message Bubbles styling */
+.str-chat__message-bubble {
+  border-radius: 1.25rem !important;
+  padding: 0.75rem 1rem !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Own messages */
+.str-chat__message--me .str-chat__message-bubble {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-content) !important;
+  border-bottom-right-radius: 0.25rem !important;
+}
+
+/* Other messages */
+.str-chat__message--other .str-chat__message-bubble {
+  background-color: var(--color-base-200) !important;
+  color: var(--color-base-content) !important;
+  border-bottom-left-radius: 0.25rem !important;
+  border: 1px solid color-mix(in srgb, var(--color-base-content) 8%, transparent) !important;
+}
+
+/* Message Input Area */
+.str-chat__message-input {
+  background-color: var(--color-base-100) !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-base-content) 10%, transparent) !important;
+  padding: 1rem !important;
+}
+
+.str-chat__message-input-inner {
+  background-color: var(--color-base-200) !important;
+  border: 1px solid color-mix(in srgb, var(--color-base-content) 10%, transparent) !important;
+  border-radius: 1.5rem !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.str-chat__message-input-inner:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+  background-color: var(--color-base-100) !important;
+}
+
+/* Specific typing textareas & input containers overrides */
+.str-chat__message-input-textarea,
+.str-chat__message-input-textarea textarea,
+.str-chat__textarea,
+.str-chat__textarea textarea,
+.str-chat__input-flat textarea {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--color-base-content) !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  min-height: 24px !important;
+  line-height: 1.5 !important;
+  padding: 4px 0 !important;
+  width: 100% !important;
+}
+
+/* Fix upload and send actions icons */
+.str-chat__input-flat--actions,
+.str-chat__message-input-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.str-chat__send-button,
+.str-chat__file-input,
+.str-chat__emoji-picker-button {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  transition: all 0.2s ease !important;
+  color: var(--color-base-content) !important;
+}
+
+.str-chat__send-button {
+  color: var(--color-primary) !important;
+}
+
+.str-chat__send-button:hover {
+  color: color-mix(in srgb, var(--color-primary) 80%, black) !important;
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+.str-chat__file-input:hover,
+.str-chat__emoji-picker-button:hover {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+/* Avatar styling */
+.str-chat__avatar-image {
+  border-radius: 50% !important;
+}
+
+/* Typo indicators */
+.str-chat__typing-indicator {
+  background-color: var(--color-base-100) !important;
+  color: var(--color-base-content) !important;
+  font-size: 0.75rem !important;
+  opacity: 0.7 !important;
+  padding-left: 1rem !important;
+}
