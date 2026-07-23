@@ -1,5 +1,6 @@
 import User from "../models/User.js"
 import FriendRequest from "../models/FriendRequest.js"
+import { upsertStreamUser } from "../lib/stream.js"
 
 export async function getRecommendedUsers(req, res) {
 
@@ -32,6 +33,20 @@ export async function getMyFriends(req, res) {
         const user = await User.findById(req.user.id)
         .select("friends")
         .populate("friends", "fullName profilePic nativeLanguage learningLanguage")
+
+        // Sync friends with Stream Chat to ensure they exist on Stream
+        for (const friend of user.friends) {
+            try {
+                await upsertStreamUser({
+                    id: friend._id.toString(),
+                    name: friend.fullName,
+                    image: friend.profilePic || ""
+                });
+            } catch (err) {
+                console.error("Error syncing friend with Stream Chat:", err);
+            }
+        }
+
         res.status(200).json(user.friends)
     } catch (error) {
         console.error("Error is getMyFriends controller", error.message)
@@ -119,6 +134,29 @@ export async function acceptFriendRequest(req, res) {
         await User.findByIdAndUpdate(friendRequest.recipient,{
             $addToSet:{friends: friendRequest.sender}
         })
+
+        // Sync both sender and recipient in Stream Chat
+        try {
+            const senderUser = await User.findById(friendRequest.sender);
+            const recipientUser = await User.findById(friendRequest.recipient);
+            
+            if (senderUser) {
+                await upsertStreamUser({
+                    id: senderUser._id.toString(),
+                    name: senderUser.fullName,
+                    image: senderUser.profilePic || ""
+                });
+            }
+            if (recipientUser) {
+                await upsertStreamUser({
+                    id: recipientUser._id.toString(),
+                    name: recipientUser.fullName,
+                    image: recipientUser.profilePic || ""
+                });
+            }
+        } catch (syncErr) {
+            console.error("Error syncing users on friend accept:", syncErr);
+        }
 
         res.status(200).json({
             message: "Friend request acceptecd"

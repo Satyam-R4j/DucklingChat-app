@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import OnboardingPage from "./pages/OnboardingPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
+import FeaturesPage from "./pages/FeaturesPage.jsx";
 import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js";
@@ -113,6 +114,7 @@ const App = () => {
             )
           }
         />
+        <Route path="/features" element={<FeaturesPage />} />
         <Route
           path="/notifications"
           element={

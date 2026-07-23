@@ -23,6 +23,7 @@ const Sidebar = () => {
     { label: "Home", path: "/", icon: Home },
     { label: "Chats", path: "/chat", icon: MessageSquare },
     { label: "Notifications", path: "/notifications", icon: Bell },
+    { label: "Features", path: "/features", icon: Sparkles },
   ];
 
   return (
@@ -31,18 +32,18 @@ const Sidebar = () => {
       <div className="p-5 border-b border-base-300 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-400 rounded-full blur-xs opacity-40 group-hover:opacity-75 transition duration-300"></div>
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-emerald-400 rounded-full blur-xs opacity-50 group-hover:opacity-85 transition duration-300"></div>
             <img
               src={logo}
               alt="Duckling Logo"
-              className="relative size-10 object-contain transform group-hover:scale-105 transition-transform duration-200"
+              className="relative size-10 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-sm"
             />
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
               Duckling
             </span>
-            <span className="text-[10px] uppercase font-semibold tracking-widest text-base-content/50 flex items-center gap-1">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-base-content/50 flex items-center gap-1.5">
               <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Live Chat
             </span>
