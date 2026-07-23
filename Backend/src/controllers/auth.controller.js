@@ -63,24 +63,21 @@ export async function signup(req, res) {
             expiresIn: "7d"
         })
 
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
         res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: "strict",
-            secure: process.env.NODE_ENV === "production"
+            sameSite: isProduction ? "none" : "lax",
+            secure: isProduction ? true : false,
         })
 
         res.status(201).json({ success: true, user: newUser })
-
-
 
     } catch (error) {
         console.log("Error in signup controller", error)
         res.status(500).json({ message: "Internal Server Error" })
     }
-
 }
-
 
 export async function login(req, res) {
 
@@ -106,25 +103,29 @@ export async function login(req, res) {
             expiresIn: "7d"
         })
 
+        const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
         res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: "strict",
-            secure: process.env.NODE_ENV === "production"
+            sameSite: isProduction ? "none" : "lax",
+            secure: isProduction ? true : false,
         })
 
         res.status(201).json({ success: true, user })
-
 
     } catch (error) {
         console.log("Error in login controller", error)
         res.status(500).json({ message: "Internal Server Error" })
     }
-
-
 }
+
 export function logout(req, res) {
-    res.clearCookie("jwt")
+    const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER;
+    res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction ? true : false,
+    });
     res.status(200).json({ success: true, message: "Logout successful" })
 }
 

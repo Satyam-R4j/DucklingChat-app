@@ -20,7 +20,10 @@ const SignupPage = () => {
     error,
   } = useMutation({
     mutationFn: signup,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["authUser"], data);
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
   });
 
   const handleSignup = (e) => {
